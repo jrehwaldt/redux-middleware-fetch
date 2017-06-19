@@ -5,12 +5,12 @@
   "main": "lib/middleware.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "compile": "./node_modules/.bin/babel -d lib/ src/",
+    "compile": "tsc -p ./",
     "prepublish": "npm run compile"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/fantasywind/redux-middleware-fetch.git"
+    "url": "https://github.com/jrehwaldt/redux-middleware-fetch.git"
   },
   "keywords": [
     "redux",
@@ -24,16 +24,15 @@
   "author": "Chia Yu Pai (Rytass)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/fantasywind/redux-middleware-fetch/issues"
+    "url": "https://github.com/jrehwaldt/redux-middleware-fetch/issues"
   },
-  "homepage": "https://github.com/fantasywind/redux-middleware-fetch#readme",
+  "homepage": "https://github.com/jrehwaldt/redux-middleware-fetch#readme",
   "dependencies": {
     "lodash": "^4.15.0",
     "qs": "^6.3.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.18.0",
-    "babel-preset-es2015": "^6.18.0",
-    "babel-preset-stage-1": "^6.16.0"
+    "redux": "^3.7.0",
+    "typescript": "^2.3.4"
   }
 }
