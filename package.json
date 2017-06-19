@@ -3,6 +3,8 @@
   "version": "0.1.9",
   "description": "Redux Whatwg Fetch Middleware",
   "main": "lib/middleware.js",
+  "module": "src/middleware.ts",
+  "typings": "./index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "tsc -p ./",
