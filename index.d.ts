@@ -12,7 +12,7 @@ export type API_FINISHED = typeof API_FINISHED;
 export interface FetchAction extends Action {
   type: API_REQUEST;
   entrypoint: string;
-  types: [string | null, string, string];
+  types: [string, string | null, string | null];
 
   method?: "GET" | "POST" | "DELETE" | "PUT" | "OPTION" | "HEAD" | "PATCH";
   body?: any;
