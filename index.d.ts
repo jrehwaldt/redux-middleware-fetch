@@ -1,18 +1,19 @@
 import { Middleware, Dispatch, Action } from "redux";
+export {
+  API_REQUEST,
+  NO_TOKEN_STORED,
+  API_REQUEST_SENT,
+  API_FINISHED
+} from "./src/middleware";
 
-export const API_REQUEST = "REDUX_MIDDLEWARE_FETCH/API_REQUEST";
 export type API_REQUEST = typeof API_REQUEST;
-export const NO_TOKEN_STORED = "REDUX_MIDDLEWARE_FETCH/NO_TOKEN_STORED";
 export type NO_TOKEN_STORED = typeof NO_TOKEN_STORED;
-export const API_REQUEST_SENT = "REDUX_MIDDLEWARE_FETCH/API_REQUEST_SENT";
 export type API_REQUEST_SENT = typeof API_REQUEST_SENT;
-export const API_FINISHED = "REDUX_MIDDLEWARE_FETCH/API_FINISHED";
 export type API_FINISHED = typeof API_FINISHED;
 
-export interface FetchAction extends Action {
-  type: API_REQUEST;
+export interface FetchOption {
   entrypoint: string;
-  types: [string | Symbol, string | Symbol | null, string | Symbol | null];
+  types: [string | symbol, string | symbol | null, string | symbol | null];
 
   method?: "GET" | "POST" | "DELETE" | "PUT" | "OPTION" | "HEAD" | "PATCH";
   body?: any;
@@ -29,16 +30,20 @@ export interface FetchAction extends Action {
   headers?: { [key: string]: string };
 }
 
+export interface FetchAction extends Action {
+  // TODO it is currently not possible to type check constant computed keys
+  // due to @see https://github.com/Microsoft/TypeScript/issues/5579
+  //[API_REQUEST]: FetchOption;
+  ["REDUX_MIDDLEWARE_FETCH/API_REQUEST"]: FetchOption;
+}
+
 declare module "redux" {
   export interface Dispatch<S> {
     <R>(fetchAction: FetchAction): R;
   }
 }
 
-declare const fetchMiddleware: Middleware & {
-  withExtraArgument(extraArgument: any): Middleware;
-};
-
+declare const fetchMiddleware: Middleware;
 export default fetchMiddleware;
 
 export interface Storage {
