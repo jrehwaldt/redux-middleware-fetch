@@ -6,10 +6,10 @@ export {
   API_FINISHED
 } from "./src/middleware";
 
-export type API_REQUEST = typeof API_REQUEST;
-export type NO_TOKEN_STORED = typeof NO_TOKEN_STORED;
-export type API_REQUEST_SENT = typeof API_REQUEST_SENT;
-export type API_FINISHED = typeof API_FINISHED;
+//export type API_REQUEST = typeof API_REQUEST;
+//export type NO_TOKEN_STORED = typeof NO_TOKEN_STORED;
+//export type API_REQUEST_SENT = typeof API_REQUEST_SENT;
+//export type API_FINISHED = typeof API_FINISHED;
 
 export interface FetchOption {
   entrypoint: string;
