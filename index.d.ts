@@ -30,11 +30,11 @@ export interface FetchOption {
   headers?: { [key: string]: string };
 }
 
-export interface FetchAction extends Action {
+export interface FetchAction {
   // TODO it is currently not possible to type check constant computed keys
   // due to @see https://github.com/Microsoft/TypeScript/issues/5579
   //[API_REQUEST]: FetchOption;
-  ["REDUX_MIDDLEWARE_FETCH/API_REQUEST"]: FetchOption;
+  [key: string]: FetchOption;
 }
 
 declare module "redux" {
