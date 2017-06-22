@@ -1,5 +1,5 @@
 /* global API_HOST:false */
-import _ from "lodash";
+import { omit, forEach, isArray } from "lodash";
 import qs from "qs";
 
 let HOST = "/api";
@@ -65,7 +65,7 @@ export default () => next => async action => {
     headers
   } = requestOptions;
 
-  const dispatchPayload = _.omit(requestOptions.dispatchPayload || {}, "type");
+  const dispatchPayload = omit(requestOptions.dispatchPayload || {}, "type");
   const customHeaders = headers || {};
 
   const [successType, errorType, requestType] = types;
@@ -107,7 +107,7 @@ export default () => next => async action => {
   // FormData
   if (formData) {
     fetchOptions.body = new FormData();
-    _.forEach(body, (val, key) => {
+    forEach(body, (val, key) => {
       if (val) {
         if (val instanceof FileList) {
           [].forEach.call(val, file => fetchOptions.body.append(key, file));
@@ -184,7 +184,7 @@ export default () => next => async action => {
     return console.error(error);
   }
 
-  if (_.isArray(response)) {
+  if (isArray(response)) {
     next({
       type: successType,
       list: response,
