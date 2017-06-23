@@ -42,13 +42,13 @@ export interface FetchAction {
   [key: string]: FetchOption;
 }
 
-export interface FetchConfiguration {
+export interface FetchConfiguration extends Action {
   entrypoint: string;
   url: string;
   fetchOptions: RequestInfo;
 }
 
-export interface FetchResult<P> {
+export interface FetchResult<P> extends Action {
   payload: P;
   response?: Response;
 }
