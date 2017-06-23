@@ -2,8 +2,6 @@
 import { omit, forEach } from "lodash";
 import qs from "qs";
 
-let HOST = "/api";
-
 export class SimpleStorage {
   getItem(key) {
     return this[key];
@@ -14,25 +12,15 @@ export class SimpleStorage {
   }
 }
 
-let storage;
-
-if (typeof localStorage !== "undefined") {
-  storage = localStorage;
-} else {
-  storage = new SimpleStorage();
-}
-
-if (typeof API_HOST !== "undefined") {
-  HOST = API_HOST;
-}
+let storage = new SimpleStorage();
 
 export const API_REQUEST = "REDUX_MIDDLEWARE_FETCH/API_REQUEST";
-export const NO_TOKEN_STORED = "REDUX_MIDDLEWARE_FETCH/NO_TOKEN_STORED";
-export const API_REQUEST_SENT = "REDUX_MIDDLEWARE_FETCH/API_REQUEST_SENT";
-export const API_FINISHED = "REDUX_MIDDLEWARE_FETCH/API_FINISHED";
+export const API_NO_TOKEN_STORED = "REDUX_MIDDLEWARE_FETCH/API_NO_TOKEN_STORED";
+export const API_REQUEST_START = "REDUX_MIDDLEWARE_FETCH/API_REQUEST_START";
+export const API_REQUEST_END = "REDUX_MIDDLEWARE_FETCH/API_REQUEST_END";
 
-export function setAPIHost(API_HOST) {
-  HOST = API_HOST;
+export function setAPIHost(host) {
+  storage.setItem("host", host);
 }
 
 export function setToken(token) {
@@ -87,7 +75,7 @@ export default () => next => async action => {
       fetchOptions.headers.Authorization = token;
     } else {
       return next({
-        type: NO_TOKEN_STORED
+        type: API_NO_TOKEN_STORED
       });
     }
   }
@@ -118,7 +106,8 @@ export default () => next => async action => {
     });
   }
 
-  let response;
+  const response;
+  const responseJson;
 
   try {
     // Before Request
@@ -132,41 +121,43 @@ export default () => next => async action => {
 
     // Request Animation Start
     next({
-      type: API_REQUEST_SENT
+      type: API_REQUEST_START
     });
 
-    const response = await fetch(`${fqdn || HOST}${entrypoint}`, fetchOptions);
+    response = await fetch(
+      `${fqdn || storage.getItem("host") || "/api"}${entrypoint}`,
+      fetchOptions
+     );
 
     // Request Animation End
     next({
-      type: API_FINISHED
+      type: API_REQUEST_END
     });
 
-    let json;
     if (response.ok) {
       if (response.status === 204) {
-        json = {};
+        responseJson = {};
       } else {
-        json = await response.json();
+        responseJson = await response.json();
       }
     } else {
-      json = await response.json();
+      responseJson = await response.json();
 
       if (onFailed) {
-        onFailed(response.message, json, response);
+        onFailed(response.message, responseJson, response);
       }
 
       return next({
         ...dispatchPayload,
         error: response.message,
-        payload: json,
+        payload: responseJson,
         response: response,
         type: errorType
       });
     }
   } catch (error) {
     if (onFailed) {
-      onFailed(error.message, error);
+      onFailed(error.message, error, response);
     }
 
     if (errorType) {
@@ -181,12 +172,12 @@ export default () => next => async action => {
   }
 
   if (onSuccess) {
-    onSuccess(json, response);
+    onSuccess(responseJson, response);
   }
 
   return next({
     ...dispatchPayload,
-    payload: json,
+    payload: responseJson,
     response: response,
     type: successType
   });

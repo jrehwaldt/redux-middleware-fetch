@@ -1,9 +1,9 @@
 import { Middleware, Dispatch, Action } from "redux";
 export {
   API_REQUEST,
-  NO_TOKEN_STORED,
-  API_REQUEST_SENT,
-  API_FINISHED
+  API_NO_TOKEN_STORED,
+  API_REQUEST_START,
+  API_REQUEST_END
 } from "./src/middleware";
 
 //export type API_REQUEST = typeof API_REQUEST;
