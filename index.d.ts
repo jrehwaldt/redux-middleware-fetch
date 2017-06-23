@@ -23,11 +23,16 @@ export interface FetchOption {
   formData?: boolean;
   urlEncoded?: boolean;
 
-  onSuccess?: () => void;
-  onFailed?: () => void;
+  onSuccess?: (json: {}, response: Response) => void;
+  onFailed?: (
+    errorMessage: string,
+    error: Error | {},
+    response?: Response
+  ) => void;
 
   fqdn?: string;
   headers?: { [key: string]: string };
+  dispatchPayload?: {};
 }
 
 export interface FetchAction {

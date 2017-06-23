@@ -1,5 +1,5 @@
 /* global API_HOST:false */
-import { omit, forEach, isArray } from "lodash";
+import { omit, forEach } from "lodash";
 import qs from "qs";
 
 let HOST = "/api";
@@ -135,77 +135,59 @@ export default () => next => async action => {
       type: API_REQUEST_SENT
     });
 
-    response = await fetch(`${fqdn || HOST}${entrypoint}`, fetchOptions);
+    const response = await fetch(`${fqdn || HOST}${entrypoint}`, fetchOptions);
 
     // Request Animation End
     next({
       type: API_FINISHED
     });
 
+    let json;
     if (response.ok) {
       if (response.status === 204) {
-        response = {};
+        json = {};
       } else {
-        response = await response.json();
+        json = await response.json();
       }
     } else {
-      response = await response.json();
-
-      next({
-        type: errorType,
-        error: response.message,
-        ...response
-      });
+      json = await response.json();
 
       if (onFailed) {
-        onFailed(response.message);
+        onFailed(response.message, json, response);
       }
 
-      return true;
+      return next({
+        ...dispatchPayload,
+        error: response.message,
+        payload: json,
+        response: response,
+        type: errorType
+      });
     }
   } catch (error) {
-    if (errorType) {
-      next({
-        type: errorType,
-        error
-      });
-
-      if (onFailed) {
-        onFailed(error);
-      }
-
-      return true;
+    if (onFailed) {
+      onFailed(error.message, error);
     }
 
-    if (onFailed) {
-      onFailed(error);
+    if (errorType) {
+      next({
+        ...dispatchPayload,
+        error,
+        type: errorType
+      });
     }
 
     return console.error(error);
   }
 
-  if (isArray(response)) {
-    next({
-      type: successType,
-      list: response,
-      ...dispatchPayload
-    });
-
-    if (onSuccess) {
-      onSuccess(response);
-    }
-
-    return true;
-  }
-
   if (onSuccess) {
-    onSuccess(response);
+    onSuccess(json, response);
   }
 
   return next({
     ...dispatchPayload,
-    ...response,
-    _type: response.type,
+    payload: json,
+    response: response,
     type: successType
   });
 };
