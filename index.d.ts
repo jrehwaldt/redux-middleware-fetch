@@ -42,6 +42,17 @@ export interface FetchAction {
   [key: string]: FetchOption;
 }
 
+export interface FetchConfiguration {
+  entrypoint: string;
+  url: string;
+  fetchOptions: RequestInfo;
+}
+
+export interface FetchResult<P> {
+  payload: P;
+  response?: Response;
+}
+
 declare module "redux" {
   export interface Dispatch<S> {
     <R>(fetchAction: FetchAction): R;

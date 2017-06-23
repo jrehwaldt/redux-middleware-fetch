@@ -1,4 +1,3 @@
-/* global API_HOST:false */
 import { omit, forEach } from "lodash";
 import qs from "qs";
 
@@ -110,11 +109,13 @@ export default () => next => async action => {
   const responseJson;
 
   try {
+    const url = `${fqdn || storage.getItem("host") || "/api"}${entrypoint}`;
     // Before Request
     if (requestType) {
       next({
         type: requestType,
         entrypoint,
+        url,
         fetchOptions
       });
     }
@@ -124,10 +125,7 @@ export default () => next => async action => {
       type: API_REQUEST_START
     });
 
-    response = await fetch(
-      `${fqdn || storage.getItem("host") || "/api"}${entrypoint}`,
-      fetchOptions
-     );
+    response = await fetch(url, fetchOptions);
 
     // Request Animation End
     next({
@@ -164,6 +162,7 @@ export default () => next => async action => {
       next({
         ...dispatchPayload,
         error,
+        response: response,
         type: errorType
       });
     }
