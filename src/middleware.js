@@ -1,4 +1,4 @@
-import { omit, forEach } from "lodash";
+import { omit, forEach, uniqueId } from "lodash";
 import qs from "qs";
 
 export class SimpleStorage {
@@ -49,7 +49,8 @@ export default () => next => async action => {
     onFailed,
     urlEncoded,
     fqdn,
-    headers
+    headers,
+    uuid = uniqueId('fetch-')
   } = requestOptions;
 
   const dispatchPayload = omit(requestOptions.dispatchPayload || {}, "type");
@@ -74,7 +75,9 @@ export default () => next => async action => {
       fetchOptions.headers.Authorization = token;
     } else {
       return next({
-        type: API_NO_TOKEN_STORED
+        ...dispatchPayload,
+        type: API_NO_TOKEN_STORED,
+        uuid
       });
     }
   }
@@ -113,23 +116,29 @@ export default () => next => async action => {
     // Before Request
     if (requestType) {
       next({
+        ...dispatchPayload,
         type: requestType,
         entrypoint,
         url,
-        fetchOptions
+        fetchOptions,
+        uuid
       });
     }
 
     // Request Animation Start
     next({
-      type: API_REQUEST_START
+      ...dispatchPayload,
+      type: API_REQUEST_START,
+      uuid
     });
 
     response = await fetch(url, fetchOptions);
 
     // Request Animation End
     next({
-      type: API_REQUEST_END
+      ...dispatchPayload,
+      type: API_REQUEST_END,
+      uuid
     });
 
     if (response.ok) {
@@ -149,8 +158,9 @@ export default () => next => async action => {
         ...dispatchPayload,
         error: response.message,
         payload: responseJson,
-        response: response,
-        type: errorType
+        response,
+        type: errorType,
+        uuid
       });
     }
   } catch (error) {
@@ -162,8 +172,9 @@ export default () => next => async action => {
       next({
         ...dispatchPayload,
         error,
-        response: response,
-        type: errorType
+        response,
+        type: errorType,
+        uuid
       });
     }
 
@@ -177,7 +188,8 @@ export default () => next => async action => {
   return next({
     ...dispatchPayload,
     payload: responseJson,
-    response: response,
-    type: successType
+    response,
+    type: successType,
+    uuid
   });
 };

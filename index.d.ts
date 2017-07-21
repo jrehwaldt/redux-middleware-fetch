@@ -11,6 +11,8 @@ export {
 //export type API_REQUEST_SENT = typeof API_REQUEST_SENT;
 //export type API_FINISHED = typeof API_FINISHED;
 
+export type FetchUUID = string | number;
+
 export interface FetchOption {
   entrypoint: string;
   types: [string | symbol, string | symbol | null, string | symbol | null];
@@ -33,6 +35,7 @@ export interface FetchOption {
   fqdn?: string;
   headers?: { [key: string]: string };
   dispatchPayload?: {};
+  uuid?: FetchUUID;
 }
 
 export interface FetchAction {
@@ -42,25 +45,22 @@ export interface FetchAction {
   [key: string]: FetchOption;
 }
 
-export interface FetchConfiguration extends Action {
-  entrypoint: string;
-  url: string;
-  fetchOptions: RequestInfo;
-}
-
 export interface FetchResult<P> extends Action {
   payload: P;
   response: Response;
+  uuid: FetchUUID;
 }
 export interface FetchFailure<P> extends Action {
   error: Error | string;
   payload?: P;
   response?: ResponseInit;
+  uuid: FetchUUID;
 }
 export interface FetchInitiation extends Action {
   entrypoint: string;
   url: string;
   fetchOptions: RequestInit;
+  uuid: FetchUUID;
 }
 
 declare module "redux" {
