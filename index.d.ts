@@ -50,7 +50,17 @@ export interface FetchConfiguration extends Action {
 
 export interface FetchResult<P> extends Action {
   payload: P;
-  response?: Response;
+  response: Response;
+}
+export interface FetchFailure<P> extends Action {
+  error: Error | string;
+  payload?: P;
+  response?: ResponseInit;
+}
+export interface FetchInitiation extends Action {
+  entrypoint: string;
+  url: string;
+  fetchOptions: RequestInit;
 }
 
 declare module "redux" {
