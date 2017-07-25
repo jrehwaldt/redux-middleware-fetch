@@ -2711,8 +2711,7 @@ var middleware = function (api) {
                             }
                             // x-www-form-urlencoded
                             if (urlEncoded) {
-                                fetchOptions.headers["Content-Type"] =
-                                    "application/x-www-form-urlencoded";
+                                fetchOptions.headers["Content-Type"] = "application/x-www-form-urlencoded";
                                 fetchOptions.body = index$2.stringify(body || {});
                             }
                             // FormData
@@ -2721,10 +2720,7 @@ var middleware = function (api) {
                                 index$1(body, function (val, key) {
                                     if (val) {
                                         if (val instanceof FileList) {
-                                            
-                                            [].forEach.call(val, function (file) {
-                                                return fetchOptions.body.append(key, file);
-                                            });
+                                            [].forEach.call(val, function (file) { return fetchOptions.body.append(key, file); });
                                         }
                                         else {
                                             fetchOptions.body.append(key, val);
@@ -2746,9 +2742,7 @@ var middleware = function (api) {
                             }
                             // Request Animation Start
                             next(__assign({}, dispatchPayload, { type: API_REQUEST_START, uuid: uuid }));
-                            return [4 /*yield*/, fetch(url, fetchOptions)
-                                // Request Animation End
-                            ];
+                            return [4 /*yield*/, fetch(url, fetchOptions)];
                         case 2:
                             response = _b.sent();
                             // Request Animation End
