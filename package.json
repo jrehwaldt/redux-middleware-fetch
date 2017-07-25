@@ -32,7 +32,7 @@
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "{src,test}/**/*.ts": ["prettier --write --no-semi", "git add"]
+    "{src,test}/**/*.ts": ["prettier --parser typescript --write", "git add"]
   },
   "config": {
     "commitizen": {
